@@ -1,7 +1,7 @@
 #include "playrect.h"
 
 PlayRect::PlayRect(bool player)
-    :_player(player)
+    :_player(player), _state(State::Stop)
 {
     setPos(EdgeWidth + 2, EdgeWidth + 2);
 }
@@ -61,4 +61,20 @@ Q_UNUSED(widget);
 QRectF PlayRect::boundingRect() const
 {
     return QRectF(0, 0, RectangleWight, RectangleHeight);
+}
+
+int PlayRect::getState()
+{
+    return _state;
+}
+
+void PlayRect::setState(int newState)
+{
+    if (    newState == State::Stop      ||
+            newState == State::GoingUp   ||
+            newState == State::GoingDown ||
+            newState == State::GoingLeft ||
+            newState == State::GoingRight) {
+        _state = newState;
+    }
 }
