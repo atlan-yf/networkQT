@@ -58,8 +58,8 @@ MainView::MainView()
     _edges->addToGroup(l3);
     _edges->addToGroup(l4);
 
-    _r1 = new PlayRect(MyPlayer);
-    _r2 = new PlayRect(!MyPlayer);
+    _r1 = new PlayRect(Player1);
+    _r2 = new PlayRect(Player2);
 
     _msgWaiting = new QGraphicsTextItem("Waiting for connect...");
     _msgWaiting->setDefaultTextColor(Qt::blue);
