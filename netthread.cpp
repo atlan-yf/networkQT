@@ -20,9 +20,8 @@ void NetThread::run()
     }
 
     while (!_stopped && _connected) {
-        _socket->putChar(_command);
+        _socket->putChar(_commands->empty() ? CommandNothing : _popCommand());
         _socket->flush();
-        _command = CommandNothing;
 
         _socket->waitForReadyRead();
         QByteArray data = _socket->read(1024);
@@ -69,11 +68,15 @@ void NetThread::stop()
     _stopped = true;
 }
 
-void NetThread::setCommand(char command)
+void NetThread::addCommand(char command)
 {
-    if (command == CommandUp || command == CommandDown || command == CommandLeft || command == CommandRight) {
-        _command = command;
+    if (!(command == CommandUp || command == CommandDown || command == CommandLeft || command == CommandRight)) {
+        return;
     }
+    while (_queueLock);
+    _queueLock = true;
+    _commands->push(command);
+    _queueLock = false;
 }
 
 bool NetThread::isConnected()
@@ -83,6 +86,14 @@ bool NetThread::isConnected()
 
 NetThread::NetThread()
 {
+    _connected = false;
     _stopped = false;
-    _command = CommandNothing;
+    _queueLock = false;
+
+    _commands = new std::queue<char>;
+}
+
+NetThread::~NetThread()
+{
+    delete _commands;
 }

@@ -6,19 +6,19 @@ void MainView::keyReleaseEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Up:
             nowPlayer()->move(PlayRect::Dir::Up);
-            _thread->setCommand(CommandUp);
+            _thread->addCommand(CommandUp);
             break;
         case Qt::Key_Down:
             nowPlayer()->move(PlayRect::Dir::Down);
-            _thread->setCommand(CommandDown);
+            _thread->addCommand(CommandDown);
             break;
         case Qt::Key_Right:
             nowPlayer()->move(PlayRect::Dir::Right);
-            _thread->setCommand(CommandRight);
+            _thread->addCommand(CommandRight);
             break;
         case Qt::Key_Left:
             nowPlayer()->move(PlayRect::Dir::Left);
-            _thread->setCommand(CommandLeft);
+            _thread->addCommand(CommandLeft);
             break;
         default:
             break;
