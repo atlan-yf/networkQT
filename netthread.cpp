@@ -44,19 +44,23 @@ constexpr bool isNumber(int num)
 
 void NetThread::processData(QByteArray data)
 {
-    int coordXYs[4]={0};//分别存play1 x y play2 x y
-    int j=-1;
-    for (int i=0;data[i]!='\0';i++) {
-        if (data[i]=='x'||data[i]=='y') {
+    int coordXYs[4] = {0};//分别存play1 x y play2 x y
+    int j = -1, minusFlag;
+    for (int i = 0 ; data[i] != '\0' ; i++) {
+        if (data[i] == 'x'||data[i] == 'y') {
             j++;
+            if (j != 0)
+                coordXYs[j - 1] *= minusFlag;
+            minusFlag = 1;
         } else if (isNumber(data[i])) {
-            coordXYs[j]*=10;
-            coordXYs[j]+=(data[i]-'0');
+            coordXYs[j] *= 10;
+            coordXYs[j] += (data[i]-'0');
+        } else if (data[i] == '-'){
+            minusFlag = -1;
         } else {
             return;
         }
     }
-
     emit coords(coordXYs[0], coordXYs[1], coordXYs[2], coordXYs[3]);
 }
 

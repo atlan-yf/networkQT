@@ -1,7 +1,5 @@
 #include "mainview.h"
 
-#include <QtDebug>
-
 void MainView::keyReleaseEvent(QKeyEvent *event)
 {
     if (_thread->isConnected()) {
@@ -30,10 +28,8 @@ void MainView::keyReleaseEvent(QKeyEvent *event)
 
 void MainView::updatePositions(int x1, int y1, int x2, int y2)
 {
-    if (x1 >= 0 || y1 >= 0)
-        _r1->setPos(x1, y1);
-    if (x2 >= 0 || y2 >= 0)
-        _r2->setPos(x2, y2);
+    _r1->setPos(x1, y1);
+    _r2->setPos(x2, y2);
 }
 
 void MainView::connected()
