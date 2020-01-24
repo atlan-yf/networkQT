@@ -58,7 +58,7 @@ class Player:
             except socket.error:
                 self.connected = False
                 break
-            if (data and (data in Commands) and data <> b'n'):
+            if (data and (data in Commands)):
                 self.state = Commands[data]
 
     def getMyData(self):

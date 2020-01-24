@@ -3,25 +3,26 @@
 void NetThread::run()
 {
     _socket = new QTcpSocket();
-    while(!_stopped && !_connected) {
-        _socket->connectToHost(IP_Address, Port);
+    _socket->connectToHost(IP_Address, Port);
+    if (!_stopped)
         _connected = _socket->waitForConnected();
-        if (_connected) {
-            _socket->putChar(MyPlayer ? '1' : '2');
-            _socket->flush();
+    if (_connected) {
+        _socket->putChar(MyPlayer ? '1' : '2');
+        _socket->flush();
 
-            _socket->waitForReadyRead();
-            QByteArray data = _socket->read(1024);
-            if (!data.isEmpty()) {
-                processData(data);
-            }
-            emit connectedSignal();
+        _socket->waitForReadyRead();
+        QByteArray data = _socket->read(16);
+        if (!data.isEmpty()) {
+            processData(data);
         }
+        emit connectedSignal();
     }
 
     while (!_stopped && _connected) {
-        _socket->putChar(_commands->empty() ? CommandNothing : _popCommand());
-        _socket->flush();
+        if (!_commands->empty()) {
+            _socket->putChar(_popCommand());
+            _socket->flush();
+        }
 
         _socket->waitForReadyRead();
         QByteArray data = _socket->read(1024);
@@ -70,7 +71,11 @@ void NetThread::stop()
 
 void NetThread::addCommand(char command)
 {
-    if (!(command == CommandUp || command == CommandDown || command == CommandLeft || command == CommandRight)) {
+    if (!(command == CommandUp    ||
+          command == CommandDown  ||
+          command == CommandLeft  ||
+          command == CommandRight ||
+          command == CommandNothing)) {
         return;
     }
     while (_queueLock);

@@ -6,7 +6,7 @@ PlayRect::PlayRect(bool player)
     setPos(EdgeWidth + 2, EdgeWidth + 2);
 }
 
-void PlayRect::move(int direction)
+/*void PlayRect::move(int direction)
 {
     //WindowWidth = 800
     //WindowHeight = 600
@@ -47,7 +47,7 @@ void PlayRect::move(int direction)
     }
     this->setX(this->x() + deltaX);
     this->setY(this->y() + deltaY);
-}
+}*/
 
 void PlayRect::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {

@@ -23,9 +23,6 @@
 //边界线到屏幕边界线的宽度
 #define EdgeWidth 5.f
 
-//每个指令移动的像素
-#define Speed     10.f
-
 //指令
 #define CommandUp      'w'
 #define CommandDown    's'
