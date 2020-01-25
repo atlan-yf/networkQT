@@ -19,8 +19,9 @@ void NetThread::run()
     }
 
     while (!_stopped && _connected) {
-        if (!_commands->empty()) {
-            _socket->putChar(_popCommand());
+        if (!_commands.empty()) {
+            char c = _popCommand();
+            _socket->putChar(c);
             _socket->flush();
         }
 
@@ -71,16 +72,12 @@ void NetThread::stop()
 
 void NetThread::addCommand(char command)
 {
-    if (!(command == CommandUp    ||
-          command == CommandDown  ||
-          command == CommandLeft  ||
-          command == CommandRight ||
-          command == CommandNothing)) {
+    if (!commandManager.test(command)) {
         return;
     }
     while (_queueLock);
     _queueLock = true;
-    _commands->push(command);
+    _commands.push(command);
     _queueLock = false;
 }
 
@@ -95,10 +92,5 @@ NetThread::NetThread()
     _stopped = false;
     _queueLock = false;
 
-    _commands = new std::queue<char>;
-}
-
-NetThread::~NetThread()
-{
-    delete _commands;
+    Commands::registerCommands(&this->commandManager);
 }

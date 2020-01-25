@@ -17,12 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    commands.cpp \
     main.cpp \
     mainview.cpp \
     netthread.cpp \
     playrect.cpp
 
 HEADERS += \
+    commands.h \
     mainview.h \
     netthread.h \
     playrect.h \
@@ -34,6 +36,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    python server/command_manager.py \
     python server/main.py \
     python server/player.py \
     python server/tick.py

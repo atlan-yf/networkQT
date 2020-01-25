@@ -1,6 +1,8 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "commands.h"
+
 //在这里修改ip地址
 #define IP_Address "127.0.0.1"
 #define Port       9999
@@ -22,13 +24,6 @@
 
 //边界线到屏幕边界线的宽度
 #define EdgeWidth 5.f
-
-//指令
-#define CommandUp      'w'
-#define CommandDown    's'
-#define CommandLeft    'a'
-#define CommandRight   'd'
-#define CommandNothing 'n'
 
 //文字设置
 #define TextContent   "Waiting for connect..."  //文字内容

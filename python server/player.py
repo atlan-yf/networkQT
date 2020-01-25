@@ -2,22 +2,16 @@ import socket
 import sys
 import threading
 
-Stop  = 0
-Up    = 1
-Down  = 2
-Left  = 3
-Right = 4
-
-Speed = 100
-
-Commands = {b'w' : Up, b's' : Down, b'a' : Left, b'd' : Right, b'n' : Stop}
+import command_manager
 
 class Player:
-    def __init__(self, socket):
+    def __init__(self, socket, commandManager):
         self.socket = socket
+        self.commandManager = commandManager
         self.x = 25
         self.y = 25
-        self.state = Stop;
+        self.stateFuncs = [command_manager.defaultDo];
+        self.state = b'\0'
 
         self.connected = True
 
@@ -42,24 +36,20 @@ class Player:
         return self.connected
 
     def update(self, deltaTime):
-        if (self.state == Up):
-            self.y -= Speed * deltaTime
-        if (self.state == Down):
-            self.y += Speed * deltaTime
-        if (self.state == Left):
-            self.x -= Speed * deltaTime
-        if (self.state == Right):
-            self.x += Speed * deltaTime
+        for i, func in enumerate(self.stateFuncs):
+            func(self, deltaTime)
 
     def updateState(self):
         while (self.connected):
             try:
-                data = self.socket.recv(1)
+                code = self.socket.recv(1)
             except socket.error:
                 self.connected = False
                 break
-            if (data and (data in Commands)):
-                self.state = Commands[data]
+            funcs = self.commandManager.getFuncs(code)
+            if funcs:
+                self.stateFuncs = funcs
+                self.state = code
 
     def getMyData(self):
         return [int(self.x), int(self.y), self.state]

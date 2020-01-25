@@ -20,19 +20,21 @@ private:
     QTcpSocket       *_socket;              //连接服务端的socket
     bool             _connected;            //是否已连接到服务端并且成功“握手”的标志
     volatile bool    _queueLock;            //多线程锁，防止队列被同时修改
-    std::queue<char> *_commands;            //指令队列
+    std::queue<char> _commands;             //指令队列
 
 private:
     inline char _popCommand()
     {
         while (_queueLock);
         _queueLock = true;
-        char c = _commands->back();
-        _commands->pop();
+        char c = _commands.back();
+        _commands.pop();
         _queueLock = false;
         return c;
     }
 
+public:
+    Commands commandManager;
 public:
     void processData(QByteArray data);  //处理坐标协议的函数，由此发送coords(int, int, int, int)信号
     void stop();                        //通过改变_stopped标志，使进程安全停止
@@ -45,7 +47,6 @@ signals:
 
 public:
     NetThread();
-    ~NetThread();
 };
 
 #endif // NETTHREAD_H

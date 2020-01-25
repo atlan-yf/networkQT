@@ -8,6 +8,7 @@
 #include <QGraphicsItemGroup>
 #include <QKeyEvent>
 #include <QTcpSocket>
+#include <QList>
 
 #include "settings.h"
 #include "playrect.h"

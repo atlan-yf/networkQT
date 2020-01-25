@@ -3,23 +3,10 @@
 void MainView::keyReleaseEvent(QKeyEvent *event)
 {
     if (_thread->isConnected()) {
-        switch (event->key()) {
-        case Qt::Key_Up:
-            _thread->addCommand(CommandUp);
-            break;
-        case Qt::Key_Down:
-            _thread->addCommand(CommandDown);
-            break;
-        case Qt::Key_Right:
-            _thread->addCommand(CommandRight);
-            break;
-        case Qt::Key_Left:
-            _thread->addCommand(CommandLeft);
-            break;
-        case Qt::Key_Space:
-            _thread->addCommand(CommandNothing);
-        default:
-            break;
+        auto list = _thread->commandManager.testKey((int)event->key());
+
+        for (auto i = list.begin(); i != list.end(); ++i) {
+            _thread->addCommand(*i);
         }
     }
 }
