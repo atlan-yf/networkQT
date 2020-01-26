@@ -18,6 +18,8 @@ public:
         commands->registerCommand((int)Qt::Key_Left,  'l');
         commands->registerCommand((int)Qt::Key_Right, 'r');
         commands->registerCommand((int)Qt::Key_Space, 's');
+
+        commands->registerCommand((int)Qt::Key_Escape, 'q');
     }
 
 public:

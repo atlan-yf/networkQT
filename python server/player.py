@@ -1,61 +1,42 @@
 import socket
 import sys
-import threading
 
+import controllor
+import commander
 import command_manager
 
 class Player:
-    def __init__(self, socket, commandManager):
-        self.socket = socket
-        self.commandManager = commandManager
+    #需要一个commander作为参数，构造函数
+    def __init__(self, mycontrollor):
+        self.mycontrollor = mycontrollor
         self.x = 25
         self.y = 25
+
+        #当前更新函数列表（状态）
         self.stateFuncs = [command_manager.defaultDo];
         self.state = b'\0'
 
-        self.connected = True
+        self.gameOver = False
 
-        try:
-            self.socket.recv(1)
-            self.socket.send('x25y25x25y25'.encode('ascii'))
-        except socket.error:
-            self.connected = False
-            return
-
-        self.t = threading.Thread(target = self.updateState)
-        self.t.start()
-
+    #停止player
     def stop(self):
-        try:
-            self.socket.shutdown(2)
-        except socket.error:
-            pass
-        self.socket.close()
+        self.gameOver = True
+        self.mycontrollor.stop()
 
-    def isConnected(self):
-        return self.connected
+    #返回游戏是否结束
+    def isOver(self):
+        return self.gameOver
 
+    #更新玩家状态和下一个指令
     def update(self, deltaTime):
         for i, func in enumerate(self.stateFuncs):
             func(self, deltaTime)
+        self.mycontrollor.update(self)
 
-    def updateState(self):
-        while (self.connected):
-            try:
-                code = self.socket.recv(1)
-            except socket.error:
-                self.connected = False
-                break
-            funcs = self.commandManager.getFuncs(code)
-            if funcs:
-                self.stateFuncs = funcs
-                self.state = code
-
+    #获取自身坐标和状态
     def getMyData(self):
         return [int(self.x), int(self.y), self.state]
 
-    def sendData(self, dataByteArray):
-        try:
-            self.socket.send(dataByteArray)
-        except socket.error:
-            self.connected = False
+    #向PlayerControllor/Commander发送数据（其实只有NetCommander有接收数据的必要）
+    def sendData(self, dataBytes):
+        self.mycontrollor.nowCommander.dataCommander(dataBytes)

@@ -10,11 +10,6 @@ void NetThread::run()
         _socket->putChar(MyPlayer ? '1' : '2');
         _socket->flush();
 
-        _socket->waitForReadyRead();
-        QByteArray data = _socket->read(16);
-        if (!data.isEmpty()) {
-            processData(data);
-        }
         emit connectedSignal();
     }
 
@@ -26,12 +21,10 @@ void NetThread::run()
         }
 
         _socket->waitForReadyRead();
-        QByteArray data = _socket->read(1024);
+        QByteArray data = _socket->read(16);
         if (!data.isEmpty()) {
             processData(data);
         }
-
-        _connected = _socket->isOpen();
     }
 
     _socket->disconnectFromHost();
@@ -45,6 +38,12 @@ constexpr bool isNumber(int num)
 
 void NetThread::processData(QByteArray data)
 {
+    if (data == "over") {
+        _connected = false;
+        _stopped = true;
+        return;
+    }
+
     int coordXYs[4] = {0};//分别存play1 x y play2 x y
     int j = -1, minusFlag;
     for (int i = 0 ; data[i] != '\0' ; i++) {

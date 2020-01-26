@@ -37,6 +37,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     python server/command_manager.py \
+    python server/commander.py \
+    python server/controllor.py \
     python server/main.py \
     python server/player.py \
-    python server/tick.py
+    python server/tick.py \

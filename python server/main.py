@@ -4,23 +4,29 @@ import sys
 
 import tick
 import player
+import commander
 import command_manager
+import controllor
 
+#新建命令管理器对象，在这里注册所有命令
 commandManager = command_manager.CommandManager()
 
+#服务端socket
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 port = 9999
 server.bind(('', port))
 server.listen(2)
 
-c1, a1 = server.accept()
-c2, a2 = server.accept()
+ct1 = controllor.PlayerControllor()
+ct2 = controllor.PlayerControllor()
 
-p1 = player.Player(c1, commandManager)
-p2 = player.Player(c2, commandManager)
+p1 = player.Player(ct1)
+p2 = player.Player(ct2)
 
-tick.Tick(p1, p2).start()
+#隐式新建Tick类，并开始tick
+tick.Tick(p1, p2, server, commandManager).start()
 
+#退出
 p1.stop()
 p2.stop()
 server.close()
