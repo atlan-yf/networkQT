@@ -27,6 +27,7 @@
 
 //文字设置
 #define TextContent   "Waiting for connect..."  //文字内容
+#define TextContentRE "Waiting for reconnect..."
 #define TextFontSize  20                        //字体大小
 #define TextPositionX 5                         //文字位置
 #define TextPositionY 5

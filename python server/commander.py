@@ -86,12 +86,16 @@ class NetCommander(Commander):
     def updateCommand(selfC):
         try:
             code = selfC.mysocket.recv(1)
-            funcs = selfC.commandManager.getFuncs(code)
-            if funcs:
-                selfC.lockWhenUnlocked()
-                selfC.nextCommand = funcs
-                selfC.nextCode = code
-                selfC.unlock()
+
+            if code == b'\x7f':
+                selfC.mysocket.send('connect test'.encode('ascii'))
+            else:
+                funcs = selfC.commandManager.getFuncs(code)
+                if funcs:
+                    selfC.lockWhenUnlocked()
+                    selfC.nextCommand = funcs
+                    selfC.nextCode = code
+                    selfC.unlock()
         except socket.error:
             selfC.stop()
 

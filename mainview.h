@@ -28,6 +28,8 @@ private:
     QGraphicsItemGroup *_edges;         //碰撞边缘，由4条线组成一个item group
     QGraphicsTextItem  *_msgWaiting;    //文字item，显示等待信息
 
+    bool                _connected;     //是否连接上
+
 private:
     inline PlayRect *nowPlayer()        //为了方便起见，写一个根据设置，获取当前玩家方块指针的函数
     {return MyPlayer ? _r1 : _r2;}
@@ -35,6 +37,7 @@ private:
 public slots:
     void updatePositions(int x1, int y1, int x2, int y2);   //接收到信号后，更新方块位置
     void connected();                                       //接收到信号后，移除文字item
+    void drop();                                            //中途掉线
 
 public:
     MainView();

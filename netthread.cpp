@@ -2,7 +2,7 @@
 
 void NetThread::run()
 {
-    _socket = new QTcpSocket();
+    _socket = new QTcpSocket;
     _socket->connectToHost(IP_Address, Port);
     if (!_stopped)
         _connected = _socket->waitForConnected();
@@ -13,17 +13,48 @@ void NetThread::run()
         emit connectedSignal();
     }
 
-    while (!_stopped && _connected) {
-        if (!_commands.empty()) {
-            char c = _popCommand();
-            _socket->putChar(c);
-            _socket->flush();
-        }
+    while (!_stopped) {
+        if (_connected) {
+            if (!_commands.empty()) {
+                char c = _popCommand();
+                _socket->putChar(c);
+                _socket->flush();
+            }
 
-        _socket->waitForReadyRead();
-        QByteArray data = _socket->read(16);
-        if (!data.isEmpty()) {
-            processData(data);
+            _connected = _socket->waitForReadyRead(1000);
+            QByteArray data = _socket->read(16);
+            if (!data.isEmpty()) {
+                processData(data);
+            }
+
+            if (_socket->state() != QAbstractSocket::UnconnectedState || _connected) {
+                _socket->putChar((char)127);
+                _socket->flush();
+
+                if (!_socket->waitForReadyRead(1000)) {
+                    _connected = false;
+                    emit dropSignal();
+                } else {
+                    _socket->read(16);
+                }
+            } else {
+                _connected = false;
+                emit dropSignal();
+            }
+        } else {
+            _socket->close();
+            delete _socket;
+            _socket = new QTcpSocket;
+            _socket->connectToHost(IP_Address, Port);
+            if (!_stopped)
+                _connected = _socket->waitForConnected();
+
+            if (_connected) {
+                _socket->putChar(MyPlayer ? '1' : '2');
+                _socket->flush();
+
+                emit connectedSignal();
+            }
         }
     }
 

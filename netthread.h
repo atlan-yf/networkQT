@@ -44,6 +44,7 @@ public:
 signals:
     void coords(int x1, int y1, int x2, int y2);    //收到并成功解析坐标协议的信号
     void connectedSignal();                         //已经连接并“握手”的信号
+    void dropSignal();                              //掉线信号
 
 public:
     NetThread();

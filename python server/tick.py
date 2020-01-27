@@ -8,7 +8,7 @@ import controllor
 import command_manager
 
 #每逻辑帧的时间
-SecPerTick = 1.0/25.0
+SecPerTick = 1.0/40.0
 
 class Tick:
     #构造函数，需要传入两个玩家

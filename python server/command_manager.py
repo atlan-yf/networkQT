@@ -49,10 +49,11 @@ class CommandManager:
 
     #注册单个命令 内部函数
     def registerCommand(self, code, func):
-        if code in self.commands.keys():
-            self.commands.setdefault(code, []).append(func)
-        else:
-            self.commands[code] = [func]
+        if code != b'\0' != b'\x7f': #禁止注册0号和127号指令（默认指令和心跳测试）
+            if code in self.commands.keys():
+                self.commands.setdefault(code, []).append(func)
+            else:
+                self.commands[code] = [func]
 
     #注册所有命令 内部函数
     def register(self):
